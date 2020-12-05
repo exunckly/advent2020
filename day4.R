@@ -74,7 +74,8 @@ checked_data <- new_data %>%
   filter((hgt_val >= 150 & hgt_val <= 193 & hgt_units == "cm") | # If cm, the number must be at least 150 and at most 193.
            (hgt_val >= 59 & hgt_val <= 76 & hgt_units == "in")) %>% # If in, the number must be at least 59 and at most 76.
   mutate(valid_pt2 = TRUE) # Allows us to join with original dataset so we have thrown nothing away
-  
+
+# Join back up with original data (so we have thrown nothign away by using filter)
 part2_data <- left_join(new_data, select(checked_data, my_id, hgt_val, hgt_units, valid_pt2), by = "my_id")
 
 # Count number of valid passports
