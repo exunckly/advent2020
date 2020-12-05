@@ -53,8 +53,8 @@ new_data <- new_data %>%
   mutate(eyr = as.numeric(eyr)) %>%
   mutate(byr = as.numeric(byr)) %>%
   mutate(iyr = as.numeric(iyr)) %>%
-  mutate(hgt_val = as.numeric(str_sub(hgt, 1, -3))) %>%
-  mutate(hgt_units = str_sub(hgt, start = -2))
+  mutate(hgt_val = ifelse(str_detect(hgt, valid_hgt), as.numeric(str_sub(hgt, 1, -3)), NA)) %>%
+  mutate(hgt_units = ifelse(str_detect(hgt, valid_hgt), str_sub(hgt, start = -2), NA))
 
 # Set the relatively complicated validation criteria
 valid_ecl <-  c("amb", "blu", "brn", "gry", "grn", "hzl", "oth") # ecl (Eye Color) - exactly one of: amb blu brn gry grn hzl oth.
@@ -75,7 +75,7 @@ checked_data <- new_data %>%
            (hgt_val >= 59 & hgt_val <= 76 & hgt_units == "in")) %>% # If in, the number must be at least 59 and at most 76.
   mutate(valid_pt2 = TRUE) # Allows us to join with original dataset so we have thrown nothing away
 
-# Join back up with original data (so we have thrown nothing away by using filter)
+# Join back up with original data (so we havethrown nothing away by using filter)
 part2_data <- left_join(new_data, select(checked_data, my_id, hgt_val, hgt_units, valid_pt2), by = "my_id")
 
 # Count number of valid passports
