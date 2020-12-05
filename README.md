@@ -4,9 +4,8 @@
 (I have not updated my own original solutions to reflect these, but may use them going forwards)
 
 readr::parse_number - extracts number from string - I didn't know about this at all
-https://www.rdocumentation.org/packages/readr/versions/1.3.1/topics/parse_number
 
-tidyr::separate_rows can have the separator defined, e.g, 
+tidyr::separate_rows can be useful a lot eaerlier than I had realised int he process e.g, 
 `separate_rows(my_data, sep = "\n\n")`
 This means that I didn't need to parse out the double newlines from one of the input files (which also contained single newlines within the data)
 
@@ -19,27 +18,33 @@ Rather than using expand.grid to find which two numbers in a set sum to a total,
 In dplyr::filter
 * Concept of multiple conditions with & in a single statement rather than one row each (perhaps harder to debug, however?)
 * also the between function
-`filter(between(iyr, 2010, 2020) & other conditions) # instead of one line each, e.g.`
-`filter(iyr >= 2010 & iyr <= 2020)`
+```R
+filter(between(iyr, 2010, 2020) & other conditions) # instead of one line each, e.g.
+filter(iyr >= 2010 & iyr <= 2020)
+```
 
 Piping and mutating
 * You can put pipes inside pipes, until the thing looks like the Mull of Kintyre overdub session...
 * You can also set several variables within the same mutate statement (but again this is maybe less easy to debug and it's harder to comment stuff out by putting # before various different %>%s?)
 What I had:
-`my_data <- read_csv(input_filename, col_names = FALSE) %>%
+```R
+my_data <- read_csv(input_filename, col_names = FALSE) %>%
   mutate(binary = str_replace_all(X1, "F|L", "0")) %>%
   mutate(binary = str_replace_all(binary, "B|R", "1")) %>%
   mutate(row = strtoi(str_sub(binary, 1, 7), base = 2)) %>%
   mutate(column = strtoi(str_sub(binary, 8, 10), base = 2)) %>%
-  mutate(seat_id = row * 8 + column)`
+  mutate(seat_id = row * 8 + column)
+```
 
 What is possible:
-`my_data <- read_csv(input_filename, col_names = FALSE) %>%
+```R
+my_data <- read_csv(input_filename, col_names = FALSE) %>%
   mutate(binary = str_replace_all(X1, "F|L", "0") %>% 
                   str_replace_all("B|R", "1"), # This is definitely nicer as there is no change of variable
         row = str_sub(binary, 1, 7) %>% strtoi (base = 2),
         column = str_sub(binary, 8, 10) %>% strtoi (base = 2),
-        seat_id = row * 8 + column)`
+        seat_id = row * 8 + column)
+```
         
 Trees problem (day 3) - it didn't even enter my head to read the landscape into a data frame and work on it in the dataframe by generating sequences for the moves. This wouldn't have been elegant if the route ever involved going both up and down (as previous ouzzles have) but is worth bearing in mind rather than writing a while loop
 
