@@ -17,10 +17,14 @@ Rather than using expand.grid to find which two numbers in a set sum to a total,
 
 In dplyr::filter
 * Concept of multiple conditions with & in a single statement rather than one row each (perhaps harder to debug, however?)
-* also the between function
+* you can use a custom function in filter, e.g.
 ```R
-filter(between(iyr, 2010, 2020) & other conditions) # instead of one line each, e.g.
-filter(iyr >= 2010 & iyr <= 2020)
+check_ecl <- function(x) {
+  x %in% c("amb", "blu", "brn", "gry", "grn", "hzl", "oth")
+}
+
+my_data <- my_data %>%
+  filter(check_ecl(ecl))
 ```
 
 Piping and mutating

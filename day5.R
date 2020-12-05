@@ -9,6 +9,9 @@ input_filename <- "data/d5_input.txt"
 # Use strtoi to get the binary values from strings
 
 # Process data to get row, column and seat IDs
+
+# post hoc note - I should have got suspicious about the *8 and adding somethign with 3 binary digits, you can just process the whole number withotu asplitting it
+
 my_data <- read_csv(input_filename, col_names = FALSE) %>%
   mutate(binary = str_replace_all(X1, "F|L", "0")) %>%
   mutate(binary = str_replace_all(binary, "B|R", "1")) %>%
