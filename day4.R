@@ -48,6 +48,11 @@ print(paste0("Part 1 - number of valid passports: ", part_1$n[1]))
 # Part 2 - apply stricter criteria to passports
 # As noted above, if the field has no value it will already be NA
 
+# Set the relatively complicated validation criteria
+valid_ecl <-  c("amb", "blu", "brn", "gry", "grn", "hzl", "oth") # ecl (Eye Color) - exactly one of: amb blu brn gry grn hzl oth.
+valid_hgt <- "[0-9]+cm|[0-9]+in" #hgt (Height) - a number followed by either cm or in:
+valid_hcl <- "#([0-9a-f]){6}" #hcl (Hair Color) - a # followed by exactly six characters 0-9 or a-f.
+
 # Clean  fields - set numeric fields to numeric and split out height values and units
 new_data <- new_data %>%
   mutate(eyr = as.numeric(eyr)) %>%
@@ -55,11 +60,6 @@ new_data <- new_data %>%
   mutate(iyr = as.numeric(iyr)) %>%
   mutate(hgt_val = ifelse(str_detect(hgt, valid_hgt), as.numeric(str_sub(hgt, 1, -3)), NA)) %>%
   mutate(hgt_units = ifelse(str_detect(hgt, valid_hgt), str_sub(hgt, start = -2), NA))
-
-# Set the relatively complicated validation criteria
-valid_ecl <-  c("amb", "blu", "brn", "gry", "grn", "hzl", "oth") # ecl (Eye Color) - exactly one of: amb blu brn gry grn hzl oth.
-valid_hgt <- "[0-9]+cm|[0-9]+in" #hgt (Height) - a number followed by either cm or in:
-valid_hcl <- "#([0-9a-f]){6}" #hcl (Hair Color) - a # followed by exactly six characters 0-9 or a-f.
 
 # Perform validation
 checked_data <- new_data %>%
@@ -76,7 +76,7 @@ checked_data <- new_data %>%
   mutate(valid_pt2 = TRUE) # Allows us to join with original dataset so we have thrown nothing away
 
 # Join back up with original data (so we have thrown nothing away by using filter)
-part2_data <- left_join(new_data, select(checked_data, my_id, hgt_val, hgt_units, valid_pt2), by = "my_id")
+part2_data <- left_join(new_data, select(checked_data, my_id, valid_pt2), by = "my_id")
 
 # Count number of valid passports
 part_2 <- part2_data %>%
