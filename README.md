@@ -5,9 +5,7 @@ Grouping and summarising
 * count(x,y) is equivalent to group(x,y) %>% tally() %>% ungroup - IT UNGROUPS AT THE END< YAY!
 * add_count(x,y) adds a column to your existing table, meaning that you don't have to left_join back up at the end
 
-# All days: things I learned from looking at others' solutions
-(I have not updated my own original solutions to reflect these, but may use them going forwards)
-
+# Day 6: things I learned from others' solutions
 
 Grouping and summarising
 * As distinct can take multiple arguments, we don't have to drop other columns before using it, e.g.
@@ -18,6 +16,8 @@ instead of
 ```R
 %>% select (-a) %>% distinct()
 ```
+
+If you want unique IDs within groups, then dplyr::row_number() respects grouping - but does also rank the answers
 
 Split string into *vector* rather than into list by grabbing the first element of the list up front:
 ```R
@@ -30,14 +30,22 @@ intersect(c("a", "b", "c"), c("b", "c", "d"))
 [1] "b" "c"
 ```
 
+
+# Days 1-5: things I learned from others' solutions
+(I have not updated my own original solutions to reflect these, but may use them going forwards)
+
 readr::parse_number - extracts number from string - I didn't know about this at all
 
-tidyr::separate_rows can be useful a lot eaerlier than I had realised int he process e.g, 
+
+tidyr::separate_rows can be useful a lot eaerlier than I had realised in the process e.g, 
 `separate_rows(my_data, sep = "\n\n")`
 This means that I didn't need to parse out the double newlines from one of the input files (which also contained single newlines within the data)
+[Used on day 6]
+
 
 Allocating unique IDs to rows (e.g. before separating them further)
 * tibble::rowid_to_column - does what it says on the tin (much nicer than what I did: initial_data$my_id <- 1:nrow(initial_data))
+[Used on day 6 - but see below!]
 * If you want unique IDs within groups, then dplyr::row_number() respects grouping - but does also rank the answers
 
 
