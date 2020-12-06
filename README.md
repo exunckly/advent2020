@@ -15,8 +15,16 @@ Much nicer than what I did: initial_data$my_id <- 1:nrow(initial_data)
 Rather than using expand.grid to find which two numbers in a set sum to a total, I could have used a neat shortcut:
 `my_data %>% filter ((total - val) *in* val)`
 
+Grouping and summarising
+* count(x,y) is equivalent to group(x,y) %>% tally() %>% ungroup - IT UNGROUPS AT THE END< YAY!
+* add_count(x,y) adds a column to your existing table, meaning that you don't have to left_join back up at the end
+
 In dplyr::filter
 * Concept of multiple conditions with & in a single statement rather than one row each (perhaps harder to debug, however?)
+* mutate multiple things at once, in the same way, e.e.
+```R
+mutate_at(c("byr", "iyr", "eyr"), as.numeric) 
+```
 * you can use a custom function in filter, e.g.
 ```R
 check_ecl <- function(x) {
