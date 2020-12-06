@@ -8,17 +8,39 @@ Grouping and summarising
 # All days: things I learned from looking at others' solutions
 (I have not updated my own original solutions to reflect these, but may use them going forwards)
 
+
+Grouping and summarising
+* As distinct can take multiple arguments, we don't have to drop other columns before using it, e.g.
+```R
+%>% distinct(b,c)
+```
+instead of
+```R
+%>% select (-a) %>% distinct()
+```
+
+Split string into *vector* rather than into list by grabbing the first element of the list up front:
+```R
+a <- str_split("abc", "")[[1]]
+```
+
+intersect may be helpful in the future:
+```R
+intersect(c("a", "b", "c"), c("b", "c", "d"))
+[1] "b" "c"
+```
+
 readr::parse_number - extracts number from string - I didn't know about this at all
 
 tidyr::separate_rows can be useful a lot eaerlier than I had realised int he process e.g, 
 `separate_rows(my_data, sep = "\n\n")`
 This means that I didn't need to parse out the double newlines from one of the input files (which also contained single newlines within the data)
 
-tibble::rowid_to_column - does what it says on the tin and works in a pipe.
-Much nicer than what I did: initial_data$my_id <- 1:nrow(initial_data)
+Allocating unique IDs to rows (e.g. before separating them further)
+* tibble::rowid_to_column - does what it says on the tin (much nicer than what I did: initial_data$my_id <- 1:nrow(initial_data))
+* If you want unique IDs within groups, then dplyr::row_number() respects grouping - but does also rank the answers
 
-Rather than using expand.grid to find which two numbers in a set sum to a total, I could have used a neat shortcut:
-`my_data %>% filter ((total - val) *in* val)`
+
 
 In dplyr::filter
 * Concept of multiple conditions with & in a single statement rather than one row each (perhaps harder to debug, however?)
@@ -58,7 +80,10 @@ my_data <- read_csv(input_filename, col_names = FALSE) %>%
         column = str_sub(binary, 8, 10) %>% strtoi (base = 2),
         seat_id = row * 8 + column)
 ```
-        
+
+Rather than using expand.grid to find which two numbers in a set sum to a total, I could have used a neat shortcut:
+`my_data %>% filter ((total - val) *in* val)`
+
 Trees problem (day 3) - it didn't even enter my head to read the landscape into a data frame and work on it in the dataframe by generating sequences for the moves. This wouldn't have been elegant if the route ever involved going both up and down (as previous ouzzles have) but is worth bearing in mind rather than writing a while loop
 
 If you ever use read.table and your data has # in it, be sure to define the comment character as "" (didn't happen to me as I used read_csv or readLines so far, but something to watch out for in the future)
