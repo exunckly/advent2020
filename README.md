@@ -22,10 +22,6 @@ Rather than using expand.grid to find which two numbers in a set sum to a total,
 
 In dplyr::filter
 * Concept of multiple conditions with & in a single statement rather than one row each (perhaps harder to debug, however?)
-* mutate multiple things at once, in the same way, e.e.
-```R
-mutate_at(c("byr", "iyr", "eyr"), as.numeric) 
-```
 * you can use a custom function in filter, e.g.
 ```R
 check_ecl <- function(x) {
@@ -38,6 +34,10 @@ my_data <- my_data %>%
 
 Piping and mutating
 * You can put pipes inside pipes, until the thing looks like the Mull of Kintyre overdub session...
+* mutate multiple things at once, in the same way, e.e.
+```R
+mutate_at(c("byr", "iyr", "eyr"), as.numeric) 
+```
 * You can also set several variables within the same mutate statement (but again this is maybe less easy to debug and it's harder to comment stuff out by putting # before various different %>%s?)
 What I had:
 ```R
