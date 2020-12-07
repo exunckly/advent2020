@@ -63,20 +63,20 @@ my_consecutive_pairs <- function(x){
 inner_bags <- tibble(paths) %>% # Now one row per path
   rowwise() %>%  # So that the next line works
   mutate(my_pairs = list(my_consecutive_pairs(paths)))%>%
-  mutate(paths_string = paste(paths, collapse = ",")) %>%
+  mutate(paths_string = paste(paths, collapse = ",")) %>% # Paths are now in a format I can cope with
   ungroup() %>% # Turns off rowwise
   filter(!str_detect(paths_string, "no other bag")) %>% # Avoid double counting the last bag in each path
-  unnest(my_pairs) %>% # Now one row per path per consecutive pairs of vertices on that path
+  unnest(my_pairs) %>% # Now one row per path per consecutive pair of vertices on that path
   mutate(from = my_pairs[,1],
          to = my_pairs[,2]) %>%
-  select(-my_pairs, -paths) %>%
-  left_join(my_data, by = c("from", "to")) %>% # Bring in weights from full dataset
+  select(-my_pairs, -paths) %>% # remove helper columns
   distinct() %>% # gets rid of repetition caused by paths_from_my_bag containing all possible paths from my_bag to any other bag
                  # giving a lot of repeated pairs, e.g. of initial step from my_bag to next bag down
+  left_join(my_data, by = c("from", "to")) %>% # Bring in weights from full dataset
   group_by(paths_string) %>%
-  summarise(stage = prod(weight)) # for each 'longest path' to a named bag, the total number of bags is the product of the weights
+  summarise(stage = prod(weight)) # for each path to a distinct bag, the total number of bags is the product of the weights of the consecutive pairs of vertices
 
-print(paste0("Part 2 - number of bags inside ", my_bag, " is ", sum(inner_bags$stage)))
+print(paste0("Part 2 - number of bags inside my ", my_bag, " is ", sum(inner_bags$stage)))
 
 # I'll come back and actually learn how to write a recursive function some day...
 
