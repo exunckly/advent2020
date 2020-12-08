@@ -105,7 +105,7 @@ while (success == FALSE){ # Loop through reg_op, changing jmp or nop one at a ti
 print(paste0("Value in accumulator immediately after program terminates: ", check[2]))
 
 
-# Part 2 using igraph instead of brute force
+# Part 2 using igraph to work out which operator to change
 
 # Work out the destination of each instruction, and what it would be if jmp and nop were interchanged
 my_data <- my_data %>%
@@ -116,14 +116,14 @@ my_data <- my_data %>%
   mutate(dest = ifelse(op == "jmp", dest_if_jmp, dest_if_nop)) %>%
   mutate(dest_if_op_changed = ifelse(op == "jmp", dest_if_nop, dest_if_jmp))
 
-# Data frame that can be read into igraph
+# Data frame that can be read into igraph ('from' and 'to' location numbers)
 graph_data <- my_data %>%
   select(loc, dest) %>%
   rename(to = dest, from = loc)
 
 my_graph <- graph_from_data_frame(graph_data, directed=TRUE)
 
-# Find the vertices we can reach from loc[1]
+# Find the locations we can reach from loc 1
 # Same method as used on day 7 to find the colours of the bags outside the shiny gold bag
 paths_from_loc1 <- all_simple_paths(my_graph, 1, mode = "out")
 loc1_vertices <- unlist(paths_from_loc1) %>%
@@ -131,7 +131,7 @@ loc1_vertices <- unlist(paths_from_loc1) %>%
   unique() %>%
   as.numeric()
 
-# Find the vertices we can reach from the final location
+# Find the locations we can reach from the final location
 paths_from_loc_final <- all_simple_paths(my_graph, length(my_data$loc), mode = "in")
 loc_final_vertices <- unlist(paths_from_loc_final) %>%
   names() %>%
@@ -153,7 +153,7 @@ new_graph_data$to[edge_to_change$loc[1]] <- edge_to_change$dest_if_op_changed[1]
 new_graph <-graph_from_data_frame(new_graph_data, directed=TRUE)
 vertices <- unlist(all_shortest_paths(new_graph, from = "1", to = as.character(length(my_data$loc)))$res[1])
 
-# Final accumulator value will be the sum of the acc column for these locations
+# Final accumulator value will be the sum of arg for any of these locations where op = acc
 my_data %>%
   filter(loc %in% vertices) %>%
   filter(op == "acc") %>%
