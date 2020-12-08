@@ -145,7 +145,7 @@ edge_to_change <- my_data %>%
   filter(dest_if_op_changed %in% loc_final_vertices) %>%
   filter(op != "acc")
 
-# Change the operator for this location in the dataframe used to make the graph
+# Change the destination for this location in the dataframe used to make the graph
 new_graph_data <- graph_data
 new_graph_data$to[edge_to_change$loc[1]] <- edge_to_change$dest_if_op_changed[1]
 
