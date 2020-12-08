@@ -1,5 +1,6 @@
 # Day 8: Advent of Code 2020
 library(tidyverse)
+library(igraph)
 
 #input_filename <- "data/d08_test.txt"
 input_filename <- "data/d08_input.txt"
@@ -25,9 +26,9 @@ run_instruction <- function(loc, acc, reg_op, reg_arg){
     #print("jmp")
     loc = loc + reg_arg[loc] # jmp: jump to new location
   } else if(reg_op[loc] == "acc"){
-    acc <- acc + reg_arg[loc] # acc: change value of accumulator and move to next line
+    acc <- acc + reg_arg[loc] # acc: change value of accumulator and move to next location
     loc = loc + 1
-  } else if(reg_op[loc] == "nop"){ # nop: no operation - move to next line
+  } else if(reg_op[loc] == "nop"){ # nop: no operation - move to next location
     loc = loc + 1
   }
   return (c(loc, acc))
@@ -76,6 +77,8 @@ print(paste0("Value in accumulator immediately before infinite loop: ", check_pr
 # Fix the program so that it terminates normally by changing exactly one jmp (to nop) or nop (to jmp).
 # What is the value of the accumulator after the program terminates?
 
+
+# Part 2 using a loop to brute force
 # initialise variables for while loop
 success <- FALSE
 i <- 0
@@ -101,8 +104,58 @@ while (success == FALSE){ # Loop through reg_op, changing jmp or nop one at a ti
 
 print(paste0("Value in accumulator immediately after program terminates: ", check[2]))
 
-# It may also be possible to do part 2 like yesterday's problem, by constructing a graph
-# as there will only be so many ways of getting to the final location in one step
-# and only so many ways of getting to those locations and you could see if the graph is
-# connected when you change any one of the jmp or nop instructions.
-# But this is for another day...
+
+# Part 2 using igraph instead of brute force
+
+# Work out the destination of each instruction, and what it would be if jmp and nop were interchanged
+my_data <- my_data %>%
+  mutate(loc = row_number()) %>%
+  mutate (dest_if_jmp = loc + arg) %>%
+  mutate (dest_if_nop = loc + 1) %>%
+  add_row(op = "end", arg = 0, loc = length(my_data$loc) + 1) %>%
+  mutate(dest = ifelse(op == "jmp", dest_if_jmp, dest_if_nop)) %>%
+  mutate(dest_if_op_changed = ifelse(op == "jmp", dest_if_nop, dest_if_jmp))
+
+# Data frame that can be read into igraph
+graph_data <- my_data %>%
+  select(loc, dest) %>%
+  rename(to = dest, from = loc)
+
+my_graph <- graph_from_data_frame(graph_data, directed=TRUE)
+
+# Find the vertices we can reach from loc[1]
+# Same method as used on day 7 to find the colours of the bags outside the shiny gold bag
+paths_from_loc1 <- all_simple_paths(my_graph, 1, mode = "out")
+loc1_vertices <- unlist(paths_from_loc1) %>%
+  names() %>%
+  unique() %>%
+  as.numeric()
+
+# Find the vertices we can reach from the final location
+paths_from_loc_final <- all_simple_paths(my_graph, length(my_data$loc), mode = "in")
+loc_final_vertices <- unlist(paths_from_loc_final) %>%
+  names() %>%
+  unique() %>%
+  as.numeric()
+
+# Find a loc in the dataframe where we can get from a member of loc1_vertices to a member of loc_final_vertices
+# by changing a jmp/nop instruction (problem indicates there is only one row with this property)
+edge_to_change <- my_data %>%
+  filter(loc %in% loc1_vertices) %>%
+  filter(dest_if_op_changed %in% loc_final_vertices) %>%
+  filter(op != "acc")
+
+# Change the operator for this location in the dataframe used to make the graph
+new_graph_data <- graph_data
+new_graph_data$to[edge_to_change$loc[1]] <- edge_to_change$dest_if_op_changed[1]
+
+# Make a new graph and find the locations we would pass through on the way from loc1 to final_loc
+new_graph <-graph_from_data_frame(new_graph_data, directed=TRUE)
+vertices <- unlist(all_shortest_paths(new_graph, from = "1", to = as.character(length(my_data$loc)))$res[1])
+
+# Final accumulator value will be the sum of the acc column for these locations
+my_data %>%
+  filter(loc %in% vertices) %>%
+  filter(op == "acc") %>%
+  select(arg) %>%
+  sum()
