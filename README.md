@@ -7,6 +7,19 @@ Grouping and summarising
 
 # Day 6: things I learned from others' solutions
 
+Parsing data - examples
+* extract a length plus units in one line:
+```R
+extract(v, c("height", "unit"), "(\\d+)(cm|in)", convert = TRUE, remove = FALSE)
+```
+* extract key:value pairs separated by spaces
+```R
+mutate(m = str_match_all(x, "(...)\\:([^ ]+)")) %>% 
+  mutate(f = map(m, ~ .[, 2]),
+         v = map(m, ~ .[, 3]))
+```
+
+
 Grouping and summarising
 * As distinct can take multiple arguments, we don't have to drop other columns before using it, e.g.
 ```R
