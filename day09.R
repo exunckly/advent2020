@@ -76,7 +76,7 @@ part2 <- NA
 while (i > 0 & is.na(part2)){
   i <- i - 1 # start one location further back than we did last time
   j <- i
-  continue_j <- TRUE
+  continue_j <- TRUE # it's better to use break() for this purpose!
   while (j > 0 & continue_j == TRUE){ # loop through backwards until we hit the start, or the answer is too large
     j <- j - 1
     my_ans <- sum(my_data$X1[j:i])
