@@ -25,7 +25,7 @@ print(paste("Number of values that can cause an integer overflow error:", overfl
 # Valid options are any two of the numbers in the series added together
 # Function takes n as an argument in case this is different in part 2
 generate_valid <- function(my_numbers, n){
-  x <- colSums(combn(my_numbers, 2))
+  x <- colSums(combn(my_numbers, n))
   return(list(x))
 }
 
