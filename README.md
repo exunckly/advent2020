@@ -1,5 +1,22 @@
 # advent2020
 
+# Day 8: things I learned from others' solutions
+break() exists, so no need to set a variable to TRUE and do a while loop until I set it to FALSE inside the loop;
+
+# Day 7: things I learned from others' solutions
+Get the edges out of igraph for a particular path:
+```R
+# syntax
+E(graph, path = path)$weight
+
+# for example
+paths_from_my_bag <- all_simple_paths(my_graph, my_bag, mode = "out")
+sapply(seq_along(paths_from_my_bag), function(x){
+  prod(E(my_graph, path = paths_from_my_bag[[x]])$weight)
+  })
+```
+
+
 # Day 6: things I learned while working on the puzzle
 Grouping and summarising
 * count(x,y) is equivalent to group(x,y) %>% tally() %>% ungroup - IT UNGROUPS AT THE END< YAY!
