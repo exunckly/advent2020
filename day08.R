@@ -84,6 +84,7 @@ success <- FALSE
 i <- 0
 
 while (success == FALSE){ # Loop through reg_op, changing jmp or nop one at a time, testing for success
+  # post hoc note - break() does a cleaner job than setting a flag to TRUE/FALSE like this
   i <- i + 1
   change <- 0 # check to see if an operator changed
   test_op <- my_reg_op # used to change one operator at a time
