@@ -86,8 +86,7 @@ while (i > 0 & is.na(part2)){
     } else if(my_ans > part1){ # No point in doing any more from here as it's already too big
       continue_j <- FALSE
     }
-    
-  }#print(paste(start, finish, my_ans))
+  }
 }
 
 print(paste("Part 2 answer:", part2))
