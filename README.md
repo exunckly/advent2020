@@ -1,6 +1,6 @@
 # advent2020
 
-# Day 8: things I learned from others' solutions
+# Days 8 and 9: things I learned from others' solutions
 break() exists, so no need to set a variable to TRUE and do a while loop until I set it to FALSE inside the loop;
 
 # Day 7: things I learned from others' solutions
