@@ -1,5 +1,9 @@
 # advent2020
 
+# Day 10: things I learned when working on the puzzle
+* diff() # vector of differences between consecutive numbers in a vector
+* rle() # run length equivalent - represents a sequence as each value, then the number of times that value appears consecutively, like how images used to be encoded in the 1980s (pixel colour, number of pixels of that colour)
+
 # Days 8 and 9: things I learned from others' solutions
 break() exists, so no need to set a variable to TRUE and do a while loop until I set it to FALSE inside the loop;
 

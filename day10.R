@@ -32,6 +32,9 @@ unique(part1)
 # What is the longest series of 1s in my input?
 
 my_run_lengths <- tibble(values = rle(part1)$values, lengths = rle(part1)$lengths)
+# rle() = run length equivalent - represents a sequence as each value, then the number of times that value appears consecutively,
+# like how images used to be encoded in the 1980s (pixel colour, number of pixels of that colour)
+
 longest_series <- my_run_lengths %>%
   filter(values == 1) %>%
   max(lengths)
