@@ -1,6 +1,5 @@
 # Day 13: Advent of Code 2020
 library(tidyverse)
-library(FRACTION)
 library(primes)
 
 # I suspect there is some clever modulo way to do this, but here's how I got on myself
