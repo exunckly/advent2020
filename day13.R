@@ -4,6 +4,9 @@ library(FRACTION)
 library(primes)
 
 # I suspect there is some clever modulo way to do this, but here's how I got on myself
+# It takes around 81 seconds to calculate on my input
+
+initial_time <- proc.time()
 
 #input_filename <- "data/d13_test.txt"
 input_filename <- "data/d13_input.txt"
@@ -25,8 +28,8 @@ next_bus <- bus_times[which.min(bus_times - (my_time %% bus_times))]
 
 part1 <- wait_time * next_bus
 
-# Part 2 - now x-position in vector represents the number of mins past a time, target_t, that we aim for the bus to leave
-# Here T = period of bus and offset = time past target_t = 0
+# Part 2 
+
 
 if (my_test == 0){
   bus_delays <- tibble(T = initial_string[[2]]) 
@@ -36,6 +39,9 @@ if (my_test == 0){
 
 # Set up dataset so we can increment loop in steps of the largest bus time period, T
 # instead of whatever bus happens to arrive at t = 0
+
+# In this dataframe, T = period of bus and offset = time past target_t = 0
+# We then shift reference so that the largest T has an offset of 0
 bus_delays_table <- bus_delays %>%
   separate_rows(T, sep = ",") %>%
   mutate(offset = row_number() - 1) %>%
@@ -81,5 +87,8 @@ repeat{
   if(isTRUE(all.equal(i %% myT, target))) break
   i <- i + stepsize
 }
-part2 <- i - bus_delays_table$offset[1] # as we shifted to take advantage of large stepsizes
+part2 <- i - bus_delays_table$offset[1] # need to shift back, as we shifted to take advantage of large stepsizes
 print(part2)
+
+final_time <- proc.time() - initial_time
+print(final_time)
